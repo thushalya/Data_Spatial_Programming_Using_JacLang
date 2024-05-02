@@ -31,5 +31,6 @@ walker create{
 }
 with entry{
     root spawn create(date="2024-04-30",items=["something","laundry"]);
+    print(dotgen(root));
 
 }
