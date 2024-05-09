@@ -68,22 +68,35 @@ edge parent{
 
 """Walker def"""
 walker traverse_graph{
+
     can go_to_day with `root entry{
+        related_nodes =[-->];
+        print(related_nodes);
+        visit related_nodes;
 
     }
     can go_to_workette with day entry{
-
-
+        related_nodes =[-->];
+        
+        for workette_node in related_nodes{
+            # print(workette_node);
+            visit workette_node;
+        }
     }
     can end with workette entry{
+        related_nodes =[-->];
+        for workette_node in related_nodes{
+            print(workette_node);
+            visit workette_node;
+        }
 
     }
 }
 
 walker create_graph{
     has json_file:list =[];
-    has day_node_list:dict={};
-    has workette_node_list:dict={};
+    has node_list:dict={};
+    # has workette_node_list:dict={};
     can go_to_day with `root entry{
         # print(self.json_file);
         x=True;
@@ -98,9 +111,9 @@ walker create_graph{
             # print(list1[0]);
             
             ## Creating first node
-            if(item[0]["jid"] not in self.day_node_list){
+            if(item[0]["jid"] not in self.node_list){
                 first_node = gen_node(item[0]);
-                self.day_node_list[first_node.jid]=first_node;
+                self.node_list[first_node.jid]=first_node;
                 if (x==True){
                     here ++> first_node;
                     x=False;
@@ -108,25 +121,24 @@ walker create_graph{
                 # print(item[0]["jid"]);
             }
             else{
-                first_node = self.day_node_list[item[0]["jid"]];
+                first_node = self.node_list[item[0]["jid"]];
             }
 
 
             # Creating last node
-            if(item[2]["jid"] not in self.workette_node_list){
+            if(item[2]["jid"] not in self.node_list){
                 last_node = gen_node(item[2]);
-                self.workette_node_list[last_node.jid]=last_node;
+                self.node_list[last_node.jid]=last_node;
             }
             else{
-                last_node = self.workette_node_list[item[2]["jid"]];
+                last_node = self.node_list[item[2]["jid"]];
             }
+            # print(first_node.jid,"  ",last_node.jid);
 
-            m = str("hello");
-            print(first_node.jid,"  ",last_node.jid);
-
-
+            #Taking the id of the edge
+            edgeid=item[1]["jid"];
             
-            first_node +:parent:jid=m:+> last_node;
+            first_node +:parent:jid=edgeid:+> last_node;
             # first_node = gen_node(item[0]);
             # last_node = gen_node(item[2]);
             # f="f";
@@ -147,9 +159,11 @@ walker create_graph{
 
 }
 
+
 with entry{
     json_file = json.load(open(f"myca_buddy_testing_get_subgraph_today_0319.json", "r"));
     root spawn create_graph(json_file=json_file["report"][0]);
+    root spawn traverse_graph();
     # print(dotgen(root));
 }
 

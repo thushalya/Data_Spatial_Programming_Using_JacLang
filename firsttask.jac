@@ -12,15 +12,17 @@ walker create{
     has items: list = [];
 
     can create_day with `root entry{
-       n= here ++> day(value=self.date);
-       visit n;
+       self.day= here ++> day(value=self.date);
+       visit self.day;
 
     }
 
     can create_item with day entry{
+        self.item_list=[];
         for list_item in self.items{
-           n = here ++> item(value=list_item);
-           visit n;
+           node_item = here ++> item(value=list_item);
+           self.item_list.append(node_item);
+           visit node_item;
         }
     }
 
@@ -29,8 +31,8 @@ walker create{
 
     }
 }
-with entry{
-    root spawn create(date="2024-04-30",items=["something","laundry"]);
-    # print(dotgen(root));
+# with entry{
+#     root spawn create(date="2024-04-30",items=["something","laundry"]);
+#     # print(dotgen(root));
 
-}
+# }
