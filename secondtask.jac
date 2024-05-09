@@ -69,26 +69,34 @@ edge parent{
 """Walker def"""
 walker traverse_graph{
 
+
     can go_to_day with `root entry{
-        related_nodes =[-->];
-        print(related_nodes);
-        visit related_nodes;
+        self.day_nodes =[-->];
+        # print("day",self.day_nodes);
+        visit self.day_nodes;
 
     }
     can go_to_workette with day entry{
-        related_nodes =[-->];
+        self.workette_nodes =[-->];
+        # print("workette",self.workette_nodes);
+        visit self.workette_nodes;
         
-        for workette_node in related_nodes{
-            # print(workette_node);
-            visit workette_node;
-        }
+        # for workette_node in self.workette_nodes{
+        #     # print(workette_node);
+        #     visit workette_node;
+        # }
     }
     can end with workette entry{
-        related_nodes =[-->];
-        for workette_node in related_nodes{
-            print(workette_node);
-            visit workette_node;
+        
+        if len([-->])>0{
+            self.bottom_workette_nodes =[-->];
+            # print("bottom",self.bottom_workette_nodes);
+            visit self.bottom_workette_nodes;
         }
+        # for workette_node in self.bottom_workette_nodes{
+        #     print(workette_node);
+        #     visit workette_node;
+        # }
 
     }
 }
@@ -160,12 +168,13 @@ walker create_graph{
 }
 
 
-with entry{
-    json_file = json.load(open(f"myca_buddy_testing_get_subgraph_today_0319.json", "r"));
-    root spawn create_graph(json_file=json_file["report"][0]);
-    root spawn traverse_graph();
-    # print(dotgen(root));
-}
+# with entry{
+#     json_file = json.load(open(f"myca_buddy_testing_get_subgraph_today_0319.json", "r"));
+#     root spawn create_graph(json_file=json_file["report"][0]);
+#     graph = root spawn traverse_graph();
+#     # print(graph.workette_nodes);
+#     # print(dotgen(root));
+# }
 
 
 
